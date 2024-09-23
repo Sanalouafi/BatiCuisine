@@ -13,8 +13,8 @@ public class Labor extends Component {
     // Constructors
     public Labor() {}
 
-    public Labor(String name, ComponentType type, BigDecimal unitCost, BigDecimal quantity, BigDecimal vatRate, Project project, BigDecimal hourlyRate, BigDecimal hoursWorked, BigDecimal productivityFactor) {
-        super(name, type, unitCost, quantity, vatRate, project);
+    public Labor(String name, ComponentType type,BigDecimal vatRate, Project project, BigDecimal hourlyRate, BigDecimal hoursWorked, BigDecimal productivityFactor) {
+        super(name, type,vatRate, project);
         this.hourlyRate = hourlyRate;
         this.hoursWorked = hoursWorked;
         this.productivityFactor = productivityFactor;

@@ -5,7 +5,8 @@ import main.java.enums.ComponentType;
 import java.math.BigDecimal;
 
 public class Material extends Component {
-
+    private BigDecimal unitCost;
+    private BigDecimal quantity;
     private BigDecimal transportCost;
     private BigDecimal qualityCoefficient;
 
@@ -13,12 +14,35 @@ public class Material extends Component {
     public Material() {}
 
     public Material(String name, ComponentType type, BigDecimal unitCost, BigDecimal quantity, BigDecimal vatRate, Project project, BigDecimal transportCost, BigDecimal qualityCoefficient) {
-        super(name, type, unitCost, quantity, vatRate, project);
+        super(name, type,vatRate, project);
+        this.unitCost=unitCost;
+        this.quantity=quantity;
         this.transportCost = transportCost;
         this.qualityCoefficient = qualityCoefficient;
     }
 
     // Getters and Setters
+    public BigDecimal getUnitCost() {
+        return unitCost;
+    }
+
+    public void setUnitCost(BigDecimal unitCost) {
+        if (unitCost == null || unitCost.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Unit cost cannot be negative");
+        }
+        this.unitCost = unitCost;
+    }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative");
+        }
+        this.quantity = quantity;
+    }
     public BigDecimal getTransportCost() {
         return transportCost;
     }

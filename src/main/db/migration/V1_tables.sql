@@ -23,14 +23,14 @@ CREATE TABLE Component (
                            id SERIAL PRIMARY KEY,
                            name VARCHAR(100) NOT NULL,
                            type VARCHAR(20) NOT NULL,
-                           unit_cost DECIMAL(10,2) NOT NULL,
-                           quantity DECIMAL(10,2) NOT NULL,
                            vat_rate DECIMAL(5,2) NOT NULL,
                            project_id INTEGER REFERENCES Project(id)
 );
 
 -- Create the Material table (inherits from Component)
 CREATE TABLE Material (
+                          unit_cost DECIMAL(10,2) NOT NULL,
+                          quantity DECIMAL(10,2) NOT NULL,
                           transport_cost DECIMAL(10,2) NOT NULL,
                           quality_coefficient DECIMAL(3,2) NOT NULL
 ) INHERITS (Component);

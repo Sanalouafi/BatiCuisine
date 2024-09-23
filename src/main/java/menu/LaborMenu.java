@@ -58,10 +58,6 @@ public class LaborMenu {
     private void addLabor() {
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
-        System.out.print("Enter unit cost: ");
-        BigDecimal unitCost = new BigDecimal(scanner.nextLine());
-        System.out.print("Enter quantity: ");
-        BigDecimal quantity = new BigDecimal(scanner.nextLine());
         System.out.print("Enter VAT rate: ");
         BigDecimal vatRate = new BigDecimal(scanner.nextLine());
         System.out.print("Enter hourly rate: ");
@@ -73,7 +69,7 @@ public class LaborMenu {
 
         ComponentType type = ComponentType.Labor;
 
-        Labor labor = new Labor(name, type, unitCost, quantity, vatRate, null, hourlyRate, hoursWorked, productivityFactor);
+        Labor labor = new Labor(name, type,vatRate, null, hourlyRate, hoursWorked, productivityFactor);
         laborService.addLabor(labor);
     }
 
@@ -90,26 +86,6 @@ public class LaborMenu {
             String name = scanner.nextLine();
             if (!name.trim().isEmpty()) {
                 labor.setName(name);
-            }
-
-            System.out.print("Enter new unit cost (current: " + labor.getUnitCost() + "): ");
-            String unitCostInput = scanner.nextLine();
-            if (!unitCostInput.trim().isEmpty()) {
-                try {
-                    labor.setUnitCost(new BigDecimal(unitCostInput));
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid unit cost input, keeping the current value.");
-                }
-            }
-
-            System.out.print("Enter new quantity (current: " + labor.getQuantity() + "): ");
-            String quantityInput = scanner.nextLine();
-            if (!quantityInput.trim().isEmpty()) {
-                try {
-                    labor.setQuantity(new BigDecimal(quantityInput));
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid quantity input, keeping the current value.");
-                }
             }
 
             System.out.print("Enter new VAT rate (current: " + labor.getVatRate() + "): ");

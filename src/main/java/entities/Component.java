@@ -9,19 +9,15 @@ public abstract class Component {
     private Long id;
     private String name;
     private ComponentType type;
-    private BigDecimal unitCost;
-    private BigDecimal quantity;
     private BigDecimal vatRate;
     private Project project;
 
     // Constructors
     public Component() {}
 
-    public Component(String name, ComponentType type, BigDecimal unitCost, BigDecimal quantity, BigDecimal vatRate, Project project) {
+    public Component(String name, ComponentType type, BigDecimal vatRate, Project project) {
         this.name = name;
         this.type = type;
-        this.unitCost = unitCost;
-        this.quantity = quantity;
         this.vatRate = vatRate;
         this.project = project;
     }
@@ -57,27 +53,7 @@ public abstract class Component {
         this.type = type;
     }
 
-    public BigDecimal getUnitCost() {
-        return unitCost;
-    }
 
-    public void setUnitCost(BigDecimal unitCost) {
-        if (unitCost == null || unitCost.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Unit cost cannot be negative");
-        }
-        this.unitCost = unitCost;
-    }
-
-    public BigDecimal getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(BigDecimal quantity) {
-        if (quantity == null || quantity.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Quantity cannot be negative");
-        }
-        this.quantity = quantity;
-    }
 
     public BigDecimal getVatRate() {
         return vatRate;
