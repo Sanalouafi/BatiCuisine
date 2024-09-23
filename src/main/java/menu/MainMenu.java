@@ -15,6 +15,7 @@ public class MainMenu {
         do {
             System.out.println("\n--- Main Menu ---");
             System.out.println("1. Client Management");
+            System.out.println("2. Labor Management");
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
@@ -25,6 +26,10 @@ public class MainMenu {
                 case 1:
                     ClientMenu clientMenu = new ClientMenu();
                     clientMenu.displayMenu();
+                    break;
+                case 2:
+                    LaborMenu laborMenu = new LaborMenu();
+                    laborMenu.displayMenu();
                     break;
                 case 0:
                     System.out.println("Exiting...");
