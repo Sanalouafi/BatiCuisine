@@ -82,30 +82,32 @@ public class ClientMenu {
     private void updateClient() {
         System.out.print("Enter client ID to update: ");
         Long id = scanner.nextLong();
-        scanner.nextLine(); 
+        scanner.nextLine();
 
         Optional<Client> optionalClient = clientService.findClientById(id);
         if (optionalClient.isPresent()) {
             Client client = optionalClient.get();
-            System.out.print("Enter new name (leave blank to keep current): ");
+
+
+            System.out.print("Enter new name (current: " + client.getName() + ", leave blank to keep current): ");
             String name = scanner.nextLine();
             if (!name.trim().isEmpty()) {
                 client.setName(name);
             }
 
-            System.out.print("Enter new address (leave blank to keep current): ");
+            System.out.print("Enter new address (current: " + client.getAddress() + ", leave blank to keep current): ");
             String address = scanner.nextLine();
             if (!address.trim().isEmpty()) {
                 client.setAddress(address);
             }
 
-            System.out.print("Enter new phone (leave blank to keep current): ");
+            System.out.print("Enter new phone (current: " + client.getPhone() + ", leave blank to keep current): ");
             String phone = scanner.nextLine();
             if (!phone.trim().isEmpty()) {
                 client.setPhone(phone);
             }
 
-            System.out.print("Is professional (true/false, leave blank to keep current): ");
+            System.out.print("Is professional (current: " + client.getIsProfessional() + ", true/false, leave blank to keep current): ");
             String isProfessionalInput = scanner.nextLine();
             if (!isProfessionalInput.trim().isEmpty()) {
                 client.setIsProfessional(Boolean.parseBoolean(isProfessionalInput));
