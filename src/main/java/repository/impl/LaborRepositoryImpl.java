@@ -16,6 +16,7 @@ public class LaborRepositoryImpl implements LaborRepository {
     private final Connection connection;
 
     public LaborRepositoryImpl() {
+
         this.connection = DatabaseConnection.getInstance().getConnection();
     }
 

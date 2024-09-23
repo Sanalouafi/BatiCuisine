@@ -13,6 +13,7 @@ public class LaborService {
     private final LaborRepository laborRepository;
 
     public LaborService() {
+
         this.laborRepository = new LaborRepositoryImpl();
     }
 

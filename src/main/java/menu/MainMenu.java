@@ -1,5 +1,8 @@
 package main.java.menu;
 
+import main.java.service.LaborService;
+import main.java.service.MaterialService;
+
 import java.util.Scanner;
 
 public class MainMenu {
@@ -7,6 +10,7 @@ public class MainMenu {
     private final Scanner scanner;
 
     public MainMenu() {
+
         this.scanner = new Scanner(System.in);
     }
 
@@ -16,6 +20,8 @@ public class MainMenu {
             System.out.println("\n--- Main Menu ---");
             System.out.println("1. Client Management");
             System.out.println("2. Labor Management");
+            System.out.println("3. Material Management");
+
             System.out.println("0. Exit");
             System.out.print("Enter your choice: ");
 
@@ -30,6 +36,10 @@ public class MainMenu {
                 case 2:
                     LaborMenu laborMenu = new LaborMenu();
                     laborMenu.displayMenu();
+                    break;
+                case 3:
+                    MaterialMenu materialMenu = new MaterialMenu();
+                    materialMenu.displayMenu();
                     break;
                 case 0:
                     System.out.println("Exiting...");
