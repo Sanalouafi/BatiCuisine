@@ -56,8 +56,12 @@ public class Client {
         if (phone == null || phone.trim().isEmpty()) {
             throw new IllegalArgumentException("Phone cannot be null or empty");
         }
+        if (!phone.matches("\\d{10}")) {
+            throw new IllegalArgumentException("Phone must contain exactly 10 digits");
+        }
         this.phone = phone;
     }
+
 
     public Boolean getIsProfessional() {
         return isProfessional;
