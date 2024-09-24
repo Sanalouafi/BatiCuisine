@@ -103,15 +103,28 @@ public class ProjectService {
         // Calculate the final total cost (with VAT and margin)
         double finalTotalCost = totalCostWithVAT + totalMargin;
 
+        // Apply professional client discount if applicable
+        if (project.getClient() != null && project.getClient().getIsProfessional()) {
+            finalTotalCost = applyProfessionalClientDiscount(finalTotalCost);
+        }
+
         // Output the results
         System.out.println("Total cost with VAT: " + totalCostWithVAT);
         System.out.println("Total margin: " + totalMargin);
-        System.out.println("Final total cost: " + finalTotalCost);
+        System.out.println("Final total cost after discount (if applicable): " + finalTotalCost);
 
         // Return the results as an array
         return new double[]{totalCostBeforeVAT, totalCostWithVAT, totalMargin, finalTotalCost};
     }
 
+    private double applyProfessionalClientDiscount(double finalTotalCost) {
+        // Convert finalTotalCost to BigDecimal for calculation
+        BigDecimal totalCostBD = BigDecimal.valueOf(finalTotalCost);
+        BigDecimal discountRate = BigDecimal.valueOf(0.3); // 30% discount
+
+        // Calculate the final cost after applying the discount
+        return totalCostBD.multiply(BigDecimal.ONE.subtract(discountRate)).doubleValue();
+    }
     public HashMap<Client, List<Project>> findClientProjects() {
         HashMap<Client, List<Project>> clientProjectsMap = new HashMap<>();
         List<Client> clients = clientService.getAllClients();
