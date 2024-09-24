@@ -5,6 +5,7 @@ import main.java.exception.LaborValidationException;
 import main.java.repository.LaborRepository;
 import main.java.repository.impl.LaborRepositoryImpl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,5 +44,14 @@ public class LaborService {
 
     public List<Labor> getAllLabors() {
         return laborRepository.findAll();
+    }
+    //  methods to calculate cost with vat and without vat
+
+    public BigDecimal calculateCost() {
+        return laborRepository.calculateCost();
+    }
+
+    public BigDecimal calculateCostWithVat() {
+        return laborRepository.calculateCostWithVat();
     }
 }

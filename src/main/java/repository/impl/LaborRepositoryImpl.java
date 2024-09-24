@@ -134,6 +134,35 @@ public class LaborRepositoryImpl implements LaborRepository {
             System.out.println("Error deleting labor: " + e.getMessage());
         }
     }
+    @Override
+    public BigDecimal calculateCost() {
+        String query = "SELECT SUM(hourly_rate * hours_worked * productivity_factor) AS total_cost FROM labor";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            if (resultSet.next()) {
+                return resultSet.getBigDecimal("total_cost");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error calculating cost: " + e.getMessage());
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal calculateCostWithVat() {
+        String query = "SELECT SUM(hourly_rate * hours_worked * productivity_factor * (1 + vat_rate)) AS total_cost_with_vat FROM labor";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            if (resultSet.next()) {
+                return resultSet.getBigDecimal("total_cost_with_vat");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error calculating cost with VAT: " + e.getMessage());
+        }
+        return BigDecimal.ZERO;
+    }
 
     private void validateLabor(Labor labor) throws LaborValidationException {
         if (labor.getHourlyRate() == null || labor.getHourlyRate().compareTo(BigDecimal.ZERO) < 0) {
