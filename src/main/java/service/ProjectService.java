@@ -18,6 +18,9 @@ public class ProjectService {
     private final LaborService laborService;
     private  final ProjectRepositoryImpl projectRepositoryImpl ;
     private final  ClientService clientService;
+    private Long currentProjectId;
+
+
     public ProjectService() {
         this.projectRepository = new ProjectRepositoryImpl();
         this.laborService= new LaborService();
@@ -123,5 +126,16 @@ public class ProjectService {
         }
 
         return clientProjectsMap;
+    }
+    //get the current project_id
+    public Long getCurrentProjectId() {
+        if (currentProjectId == null) {
+            throw new IllegalStateException("No current project is set.");
+        }
+        return currentProjectId;
+    }
+
+    public void setCurrentProjectId(Long projectId) {
+        this.currentProjectId = projectId;
     }
 }

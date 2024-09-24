@@ -3,6 +3,7 @@ package main.java.menu;
 import main.java.entities.Labor;
 import main.java.enums.ComponentType;
 import main.java.service.LaborService;
+import main.java.service.ProjectService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,10 +14,11 @@ public class LaborMenu {
 
     private final LaborService laborService;
     private final Scanner scanner;
-
+    private final ProjectService projectService;
     public LaborMenu() {
         this.laborService = new LaborService();
         this.scanner = new Scanner(System.in);
+        this.projectService = new ProjectService();
     }
 
     public void displayMenu() {
