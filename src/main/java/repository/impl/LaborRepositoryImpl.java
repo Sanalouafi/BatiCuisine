@@ -2,6 +2,7 @@ package main.java.repository.impl;
 
 import main.java.connection.DatabaseConnection;
 import main.java.entities.Labor;
+import main.java.entities.Project;
 import main.java.exception.LaborValidationException;
 import main.java.repository.LaborRepository;
 
@@ -135,34 +136,31 @@ public class LaborRepositoryImpl implements LaborRepository {
         }
     }
     @Override
-    public BigDecimal calculateCost() {
-        String query = "SELECT SUM(hourly_rate * hours_worked * productivity_factor) AS total_cost FROM labor";
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
+    public List<Labor> findByProject(Project project) {
+        List<Labor> laborList = new ArrayList<>();
+        String query = "SELECT * FROM labor WHERE project_id = ?";
 
-            if (resultSet.next()) {
-                return resultSet.getBigDecimal("total_cost");
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, project.getId());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Labor labor = new Labor();
+                    labor.setId(resultSet.getLong("id"));
+                    labor.setName(resultSet.getString("name"));
+                    labor.setHourlyRate(resultSet.getBigDecimal("hourly_rate"));
+                    labor.setHoursWorked(resultSet.getBigDecimal("hours_worked"));
+                    labor.setVatRate(resultSet.getBigDecimal("vat_rate"));
+
+                    laborList.add(labor);
+                }
             }
         } catch (SQLException e) {
-            System.out.println("Error calculating cost: " + e.getMessage());
+            System.out.println("Error retrieving labor for project: " + e.getMessage());
         }
-        return BigDecimal.ZERO;
+        return laborList;
     }
 
-    @Override
-    public BigDecimal calculateCostWithVat() {
-        String query = "SELECT SUM(hourly_rate * hours_worked * productivity_factor * (1 + vat_rate)) AS total_cost_with_vat FROM labor";
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-
-            if (resultSet.next()) {
-                return resultSet.getBigDecimal("total_cost_with_vat");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error calculating cost with VAT: " + e.getMessage());
-        }
-        return BigDecimal.ZERO;
-    }
 
     private void validateLabor(Labor labor) throws LaborValidationException {
         if (labor.getHourlyRate() == null || labor.getHourlyRate().compareTo(BigDecimal.ZERO) < 0) {

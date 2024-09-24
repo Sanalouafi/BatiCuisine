@@ -1,6 +1,7 @@
 package main.java.service;
 
 import main.java.entities.Labor;
+import main.java.entities.Project;
 import main.java.exception.LaborValidationException;
 import main.java.repository.LaborRepository;
 import main.java.repository.impl.LaborRepositoryImpl;
@@ -45,13 +46,24 @@ public class LaborService {
     public List<Labor> getAllLabors() {
         return laborRepository.findAll();
     }
-    //  methods to calculate cost with vat and without vat
+    //  method to calculate cost with vat and without vat
 
-    public BigDecimal calculateCost() {
-        return laborRepository.calculateCost();
-    }
+    public double[] calculateTotalCost(Project project) {
+        List<Labor> laborList = laborRepository.findByProject(project);
+        double totalWithoutVAT = 0;
+        double totalWithVAT = 0;
 
-    public BigDecimal calculateCostWithVat() {
-        return laborRepository.calculateCostWithVat();
+        for (Labor labor : laborList) {
+            double baseCost = labor.getHoursWorked().doubleValue() * labor.getHourlyRate().doubleValue();
+
+            double totalCostBeforeVAT = baseCost;
+
+            double totalCostWithVAT = totalCostBeforeVAT * (1 + labor.getVatRate().doubleValue() / 100);
+
+            totalWithoutVAT += totalCostBeforeVAT;
+            totalWithVAT += totalCostWithVAT;
+        }
+
+        return new double[]{totalWithoutVAT, totalWithVAT};
     }
 }
