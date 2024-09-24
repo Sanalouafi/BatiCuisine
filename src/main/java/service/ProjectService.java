@@ -16,17 +16,14 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MaterialService materialService;
     private final LaborService laborService;
-    private  final ProjectRepositoryImpl projectRepositoryImpl ;
-    private final  ClientService clientService;
+    private final ClientService clientService;
     private Long currentProjectId;
-
 
     public ProjectService() {
         this.projectRepository = new ProjectRepositoryImpl();
-        this.laborService= new LaborService();
-        this.materialService= new MaterialService();
-        this.clientService=new ClientService();
-        this.projectRepositoryImpl= new ProjectRepositoryImpl();
+        this.materialService = new MaterialService();
+        this.laborService = new LaborService();
+        this.clientService = new ClientService();
     }
 
     public Optional<Project> findById(Long id) {
@@ -72,6 +69,7 @@ public class ProjectService {
             throw new ProjectValidationException("Client cannot be null.");
         }
     }
+
     public void updateProjectStatus(Long projectId, ProjectStatus newStatus) {
         Optional<Project> projectOptional = projectRepository.findById(projectId);
         if (projectOptional.isEmpty()) {
@@ -83,26 +81,26 @@ public class ProjectService {
     }
 
     public double[] calculateTotalCost(Project project, double marginRate) {
-        //Calculate total cost for materials
+        // Calculate total cost for materials
         double[] materialTotals = materialService.calculateTotalCost(project);
         double totalMaterialsWithoutVAT = materialTotals[0];
         double totalMaterialsWithVAT = materialTotals[1];
 
-        //  Calculate total cost for labor
+        // Calculate total cost for labor
         double[] laborTotals = laborService.calculateTotalCost(project);
         double totalLaborWithoutVAT = laborTotals[0];
         double totalLaborWithVAT = laborTotals[1];
 
-        //  Total cost before VAT
+        // Total cost before VAT
         double totalCostBeforeVAT = totalMaterialsWithoutVAT + totalLaborWithoutVAT;
 
-        //  Total cost with VAT
+        // Total cost with VAT
         double totalCostWithVAT = totalMaterialsWithVAT + totalLaborWithVAT;
 
-        //Calculate margin based on the total cost with VAT
+        // Calculate margin based on the total cost with VAT
         double totalMargin = totalCostWithVAT * marginRate;
 
-        //Calculate the final total cost (with VAT and margin)
+        // Calculate the final total cost (with VAT and margin)
         double finalTotalCost = totalCostWithVAT + totalMargin;
 
         // Output the results
@@ -113,13 +111,13 @@ public class ProjectService {
         // Return the results as an array
         return new double[]{totalCostBeforeVAT, totalCostWithVAT, totalMargin, finalTotalCost};
     }
+
     public HashMap<Client, List<Project>> findClientProjects() {
         HashMap<Client, List<Project>> clientProjectsMap = new HashMap<>();
-
         List<Client> clients = clientService.getAllClients();
 
         for (Client client : clients) {
-            List<Project> projects = projectRepositoryImpl.findProjectsByClient(client.getId());
+            List<Project> projects = projectRepository.findProjectsByClient(client.getId());
             if (!projects.isEmpty()) {
                 clientProjectsMap.put(client, projects);
             }
@@ -127,7 +125,8 @@ public class ProjectService {
 
         return clientProjectsMap;
     }
-    //get the current project_id
+
+    // Get the current project_id
     public Long getCurrentProjectId() {
         if (currentProjectId == null) {
             throw new IllegalStateException("No current project is set.");

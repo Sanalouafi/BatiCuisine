@@ -22,7 +22,7 @@ public class ClientService {
         }
         return clientRepository.findById(id);
     }
-    private Optional<Client > findClientByName(String name){
+    public Optional<Client > findClientByName(String name){
         if (name==null||name.isEmpty()){
             throw new ClientValidationException("Invalid client ID provided.");
         }

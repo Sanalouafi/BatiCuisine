@@ -1,6 +1,7 @@
 package main.java.menu;
 
 import main.java.entities.Labor;
+import main.java.entities.Project;
 import main.java.enums.ComponentType;
 import main.java.service.LaborService;
 import main.java.service.ProjectService;
@@ -70,11 +71,19 @@ public class LaborMenu {
         BigDecimal productivityFactor = new BigDecimal(scanner.nextLine());
 
         ComponentType type = ComponentType.Labor;
+        Long projectId = projectService.getCurrentProjectId();
 
-        Labor labor = new Labor(name, type,vatRate, null, hourlyRate, hoursWorked, productivityFactor);
-        laborService.addLabor(labor);
+        // Get the project from the Optional
+        Optional<Project> projectOptional = projectService.findById(projectId);
+        if (projectOptional.isPresent()) {
+            Project project = projectOptional.get(); // Safely extract the Project
+
+            Labor labor = new Labor(name, type, vatRate, project, hourlyRate, hoursWorked, productivityFactor);
+            laborService.addLabor(labor);
+        } else {
+            System.out.println("No project found with ID: " + projectId);
+        }
     }
-
 
     private void updateLabor() {
         System.out.print("Enter labor ID to update: ");
