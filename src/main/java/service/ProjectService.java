@@ -78,6 +78,7 @@ public class ProjectService {
         projectRepository.updateProjectStatus(projectId, newStatus);
         System.out.println("Project status updated to " + newStatus + " for project ID " + projectId);
     }
+
     public double[] calculateTotalCost(Project project, double marginRate) {
         //Calculate total cost for materials
         double[] materialTotals = materialService.calculateTotalCost(project);
