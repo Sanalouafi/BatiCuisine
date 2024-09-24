@@ -68,6 +68,8 @@ public class Material extends Component {
     @Override
     public String toString() {
         return "Material{" +
+                ", unitCost=" + unitCost +
+                ", quantity=" + quantity +
                 "transportCost=" + transportCost +
                 ", qualityCoefficient=" + qualityCoefficient +
                 "} " + super.toString();

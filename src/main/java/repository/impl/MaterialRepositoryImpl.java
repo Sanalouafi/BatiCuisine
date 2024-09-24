@@ -140,4 +140,35 @@ public class MaterialRepositoryImpl implements MaterialRepository {
         }
         return materials;
     }
+    @Override
+    public BigDecimal calculCost() {
+        String sql = "SELECT SUM(transport_cost + quality_coefficient * base_cost) AS total_cost FROM material";
+        BigDecimal totalCost = BigDecimal.ZERO;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                totalCost = resultSet.getBigDecimal("total_cost");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalCost;
+    }
+
+    @Override
+    public BigDecimal calculWithVatCost() {
+        String sql = "SELECT SUM((transport_cost + quality_coefficient * base_cost) * 1.2) AS total_cost_with_vat FROM material";  // Assuming 20% VAT
+        BigDecimal totalCostWithVat = BigDecimal.ZERO;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                totalCostWithVat = resultSet.getBigDecimal("total_cost_with_vat");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return totalCostWithVat;
+    }
 }

@@ -38,6 +38,15 @@ public class MaterialService {
     public List<Material> findAll() {
         return materialRepository.findAll();
     }
+    // Calculate total cost without VAT for all materials
+    public BigDecimal calculCost() {
+        return materialRepository.calculCost();
+    }
+
+    // Calculate total cost with VAT for all materials
+    public BigDecimal calculWithVatCost() {
+        return materialRepository.calculWithVatCost();
+    }
 
     private void validate(Material material) {
         if (material.getName() == null || material.getName().isEmpty()) {
