@@ -70,7 +70,7 @@ public class LaborRepositoryImpl implements LaborRepository {
     public void save(Labor labor) throws LaborValidationException {
         validateLabor(labor);
 
-        String query = "INSERT INTO labor (name,vat_rate, hourly_rate, hours_worked, productivity_factor, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?::componenttype)";
+        String query = "INSERT INTO labor (name,vat_rate, hourly_rate, hours_worked, productivity_factor, type,project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?::componenttype,?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, labor.getName());
             statement.setBigDecimal(2, labor.getVatRate());
@@ -78,6 +78,7 @@ public class LaborRepositoryImpl implements LaborRepository {
             statement.setBigDecimal(4, labor.getHoursWorked());
             statement.setBigDecimal(5, labor.getProductivityFactor());
             statement.setString(6, labor.getType().name());
+            statement.setLong(7, labor.getProject().getId());
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
@@ -98,7 +99,7 @@ public class LaborRepositoryImpl implements LaborRepository {
     public void update(Labor labor) throws LaborValidationException {
         validateLabor(labor);
 
-        String query = "UPDATE labor SET name = ?, vat_rate = ?, hourly_rate = ?, hours_worked = ?, productivity_factor = ?, type = ?::componenttype WHERE id = ?";
+        String query = "UPDATE labor SET name = ?, vat_rate = ?, hourly_rate = ?, hours_worked = ?, productivity_factor = ?, type = ?::componenttype,project_id=? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, labor.getName());
             statement.setBigDecimal(2, labor.getVatRate());
@@ -106,7 +107,8 @@ public class LaborRepositoryImpl implements LaborRepository {
             statement.setBigDecimal(4, labor.getHoursWorked());
             statement.setBigDecimal(5, labor.getProductivityFactor());
             statement.setString(6, labor.getType().name());
-            statement.setLong(7, labor.getId());
+            statement.setLong(7, labor.getProject().getId());
+            statement.setLong(8, labor.getId());
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
