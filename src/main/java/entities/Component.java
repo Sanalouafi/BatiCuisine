@@ -83,8 +83,6 @@ public abstract class Component {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type=" + type +
-                ", unitCost=" + unitCost +
-                ", quantity=" + quantity +
                 ", vatRate=" + vatRate +
                 ", project=" + project +
                 '}';
