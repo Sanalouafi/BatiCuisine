@@ -182,4 +182,31 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             throw new IllegalArgumentException("Client cannot be null");
         }
     }
+    @Override
+    public void updateProjectStatus(Long projectId, ProjectStatus newStatus) {
+        Optional<Project> projectOptional = findById(projectId);
+
+        if (projectOptional.isEmpty()) {
+            System.out.println("Project with ID " + projectId + " does not exist.");
+            return;
+        }
+
+        String query = "UPDATE Project SET status = ? WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, newStatus.name());
+            statement.setLong(2, projectId);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Project status updated successfully!");
+            } else {
+                System.out.println("No project was found with ID " + projectId);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error updating project status: " + e.getMessage());
+        }
+    }
+
 }
