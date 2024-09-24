@@ -1,9 +1,8 @@
 package main.java.menu;
 
 import main.java.entities.Material;
+import main.java.entities.Project;
 import main.java.enums.ComponentType;
-import main.java.exception.MaterialValidationException;
-import main.java.service.LaborService;
 import main.java.service.MaterialService;
 
 import java.math.BigDecimal;
@@ -18,148 +17,68 @@ public class MaterialMenu {
 
     public MaterialMenu() {
         this.materialService = new MaterialService();
-
         this.scanner = new Scanner(System.in);
     }
 
-    public void displayMenu() {
-        while (true) {
-            System.out.println("Material Management Menu:");
+    public void showMenu() {
+        int choice;
+        do {
+            System.out.println("=== Material Management Menu ===");
             System.out.println("1. Add Material");
             System.out.println("2. Update Material");
             System.out.println("3. Delete Material");
-            System.out.println("4. View Material");
+            System.out.println("4. View Material by ID");
             System.out.println("5. View All Materials");
-            System.out.println("6. Exit");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            System.out.println("6. Calculate Total Cost for Project");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
 
             switch (choice) {
-                case 1:
-                    addMaterial();
-                    break;
-                case 2:
-                    updateMaterial();
-                    break;
-                case 3:
-                    deleteMaterial();
-                    break;
-                case 4:
-                    viewMaterial();
-                    break;
-                case 5:
-                    viewAllMaterials();
-                    break;
-                case 6:
-                    return;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                case 1 -> addMaterial();
+                case 2 -> updateMaterial();
+                case 3 -> deleteMaterial();
+                case 4 -> viewMaterialById();
+                case 5 -> viewAllMaterials();
+                case 6 -> calculateTotalCost();
+                case 0 -> System.out.println("Exiting Material Menu.");
+                default -> System.out.println("Invalid option, please try again.");
             }
-        }
+        } while (choice != 0);
     }
 
     private void addMaterial() {
-        try {
-            System.out.print("Enter material name: ");
-            String name = scanner.nextLine();
-
-            System.out.print("Enter unit cost: ");
-            BigDecimal unitCost = scanner.nextBigDecimal();
-
-            System.out.print("Enter quantity: ");
-            BigDecimal quantity = scanner.nextBigDecimal();
-
-            System.out.print("Enter VAT rate: ");
-            BigDecimal vatRate = scanner.nextBigDecimal();
-
-            System.out.print("Enter transport cost: ");
-            BigDecimal transportCost = scanner.nextBigDecimal();
-
-            System.out.print("Enter quality coefficient (0 to 1): ");
-            BigDecimal qualityCoefficient = scanner.nextBigDecimal();
-
-            Material material = new Material(name, ComponentType.Materiel, unitCost, quantity, vatRate, null, transportCost, qualityCoefficient);
-            materialService.save(material);
-            System.out.println("Material added successfully!");
-        } catch (MaterialValidationException e) {
-            System.out.println("Validation error: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error adding material: " + e.getMessage());
-        }
+        Material material = getMaterialInput();
+        materialService.save(material);
     }
 
     private void updateMaterial() {
-        try {
-            System.out.print("Enter material ID to update: ");
-            Long id = scanner.nextLong();
-            scanner.nextLine();
-
-            Optional<Material> optionalMaterial = materialService.findById(id);
-            if (optionalMaterial.isPresent()) {
-                Material material = optionalMaterial.get();
-
-                System.out.print("Enter new name (leave blank to keep current): ");
-                String name = scanner.nextLine();
-                if (!name.trim().isEmpty()) {
-                    material.setName(name);
-                }
-
-                System.out.print("Enter new unit cost (leave blank to keep current): ");
-                String unitCostInput = scanner.nextLine();
-                if (!unitCostInput.trim().isEmpty()) {
-                    material.setUnitCost(new BigDecimal(unitCostInput));
-                }
-
-                System.out.print("Enter new quantity (leave blank to keep current): ");
-                String quantityInput = scanner.nextLine();
-                if (!quantityInput.trim().isEmpty()) {
-                    material.setQuantity(new BigDecimal(quantityInput));
-                }
-
-                System.out.print("Enter new VAT rate (leave blank to keep current): ");
-                String vatRateInput = scanner.nextLine();
-                if (!vatRateInput.trim().isEmpty()) {
-                    material.setVatRate(new BigDecimal(vatRateInput));
-                }
-
-                System.out.print("Enter new transport cost (leave blank to keep current): ");
-                String transportCostInput = scanner.nextLine();
-                if (!transportCostInput.trim().isEmpty()) {
-                    material.setTransportCost(new BigDecimal(transportCostInput));
-                }
-
-                System.out.print("Enter new quality coefficient (0 to 1, leave blank to keep current): ");
-                String qualityCoefficientInput = scanner.nextLine();
-                if (!qualityCoefficientInput.trim().isEmpty()) {
-                    material.setQualityCoefficient(new BigDecimal(qualityCoefficientInput));
-                }
-
-                materialService.update(material);
-                System.out.println("Material updated successfully!");
-            } else {
-                System.out.println("Material not found.");
-            }
-        } catch (MaterialValidationException e) {
-            System.out.println("Validation error: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Error updating material: " + e.getMessage());
+        System.out.print("Enter the Material ID to update: ");
+        Long id = scanner.nextLong();
+        scanner.nextLine();  // Consume newline
+        Optional<Material> materialOpt = materialService.findById(id);
+        if (materialOpt.isPresent()) {
+            Material material = getMaterialInput();
+            material.setId(id);  // Ensure the ID stays the same
+            materialService.update(material);
+        } else {
+            System.out.println("Material not found.");
         }
     }
 
     private void deleteMaterial() {
-        System.out.print("Enter material ID to delete: ");
+        System.out.print("Enter the Material ID to delete: ");
         Long id = scanner.nextLong();
         materialService.delete(id);
-        System.out.println("Material deleted successfully!");
     }
 
-    private void viewMaterial() {
-        System.out.print("Enter material ID to view: ");
+    private void viewMaterialById() {
+        System.out.print("Enter the Material ID to view: ");
         Long id = scanner.nextLong();
-        Optional<Material> material = materialService.findById(id);
-        material.ifPresentOrElse(
-                m -> System.out.println("Material: " + m),
+        Optional<Material> materialOpt = materialService.findById(id);
+        materialOpt.ifPresentOrElse(
+                material -> System.out.println("Material: " + material),
                 () -> System.out.println("Material not found.")
         );
     }
@@ -169,7 +88,45 @@ public class MaterialMenu {
         if (materials.isEmpty()) {
             System.out.println("No materials found.");
         } else {
-            materials.forEach(System.out::println);
+            materials.forEach(material -> System.out.println("Material: " + material));
         }
+    }
+
+    private void calculateTotalCost() {
+        System.out.print("Enter Project ID to calculate total cost: ");
+        Long projectId = scanner.nextLong();
+        // Assume that a valid Project object is passed (you can adjust based on how you handle Project)
+        Project project = new Project();
+        project.setId(projectId);
+
+        double[] totalCosts = materialService.calculateTotalCost(project);
+        System.out.printf("Total Cost without VAT: %.2f\n", totalCosts[0]);
+        System.out.printf("Total Cost with VAT: %.2f\n", totalCosts[1]);
+    }
+
+    // Method to get user input for a Material object
+    private Material getMaterialInput() {
+        System.out.print("Enter Material name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter Material type (e.g., WOOD, METAL): ");
+        String type = scanner.nextLine().toUpperCase(); // Assume valid input
+        System.out.print("Enter Unit cost: ");
+        BigDecimal unitCost = scanner.nextBigDecimal();
+        System.out.print("Enter Quantity: ");
+        BigDecimal quantity = scanner.nextBigDecimal();
+        System.out.print("Enter VAT rate: ");
+        BigDecimal vatRate = scanner.nextBigDecimal();
+        System.out.print("Enter Transport cost: ");
+        BigDecimal transportCost = scanner.nextBigDecimal();
+        System.out.print("Enter Quality coefficient (0 to 1): ");
+        BigDecimal qualityCoefficient = scanner.nextBigDecimal();
+        System.out.print("Enter Project ID: ");
+        Long projectId = scanner.nextLong();
+        scanner.nextLine();  // Consume newline
+
+        Project project = new Project();
+        project.setId(projectId);
+
+        return new Material(name, ComponentType.valueOf(type), unitCost, quantity, vatRate, project, transportCost, qualityCoefficient);
     }
 }

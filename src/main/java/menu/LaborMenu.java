@@ -73,10 +73,9 @@ public class LaborMenu {
         ComponentType type = ComponentType.Labor;
         Long projectId = projectService.getCurrentProjectId();
 
-        // Get the project from the Optional
         Optional<Project> projectOptional = projectService.findById(projectId);
         if (projectOptional.isPresent()) {
-            Project project = projectOptional.get(); // Safely extract the Project
+            Project project = projectOptional.get();
 
             Labor labor = new Labor(name, type, vatRate, project, hourlyRate, hoursWorked, productivityFactor);
             laborService.addLabor(labor);
