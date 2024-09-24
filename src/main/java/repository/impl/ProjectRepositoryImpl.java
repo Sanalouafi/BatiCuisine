@@ -208,5 +208,36 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             System.out.println("Error updating project status: " + e.getMessage());
         }
     }
+    //get client's projects
+
+@Override
+public List<Project> findProjectsByClient(Long clientId) {
+    List<Project> projects = new ArrayList<>();
+    String query = "SELECT * FROM Project WHERE client_id = ?";
+
+    try (PreparedStatement statement = connection.prepareStatement(query)) {
+        statement.setLong(1, clientId);
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            Project project = new Project();
+            project.setId(resultSet.getLong("id"));
+            project.setName(resultSet.getString("name"));
+            project.setProfitMargin(resultSet.getBigDecimal("profit_margin"));
+            project.setTotalCost(resultSet.getBigDecimal("total_cost"));
+            project.setStatus(ProjectStatus.valueOf(resultSet.getString("status")));
+
+            Client client = new Client();
+            client.setId(resultSet.getLong("client_id"));
+            project.setClient(client);
+
+            projects.add(project);
+        }
+    } catch (SQLException e) {
+        System.out.println("Error finding projects by client: " + e.getMessage());
+    }
+
+    return projects;
+}
 
 }

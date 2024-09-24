@@ -15,4 +15,5 @@ public interface ProjectRepository {
 
     List<Project> findByStatus(ProjectStatus status);
     void updateProjectStatus(Long projectId, ProjectStatus newStatus);
+    List<Project> findProjectsByClient(Long clientId);
 }

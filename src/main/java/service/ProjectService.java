@@ -1,5 +1,6 @@
 package main.java.service;
 
+import main.java.entities.Client;
 import main.java.entities.Project;
 import main.java.enums.ProjectStatus;
 import main.java.exception.ProjectValidationException;
@@ -7,6 +8,7 @@ import main.java.repository.ProjectRepository;
 import main.java.repository.impl.ProjectRepositoryImpl;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +16,14 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MaterialService materialService;
     private final LaborService laborService;
+    private  final ProjectRepositoryImpl projectRepositoryImpl ;
+    private final  ClientService clientService;
     public ProjectService() {
         this.projectRepository = new ProjectRepositoryImpl();
         this.laborService= new LaborService();
         this.materialService= new MaterialService();
+        this.clientService=new ClientService();
+        this.projectRepositoryImpl= new ProjectRepositoryImpl();
     }
 
     public Optional<Project> findById(Long id) {
@@ -102,5 +108,19 @@ public class ProjectService {
 
         // Return the results as an array
         return new double[]{totalCostBeforeVAT, totalCostWithVAT, totalMargin, finalTotalCost};
+    }
+    public HashMap<Client, List<Project>> findClientProjects() {
+        HashMap<Client, List<Project>> clientProjectsMap = new HashMap<>();
+
+        List<Client> clients = clientService.getAllClients();
+
+        for (Client client : clients) {
+            List<Project> projects = projectRepositoryImpl.findProjectsByClient(client.getId());
+            if (!projects.isEmpty()) {
+                clientProjectsMap.put(client, projects);
+            }
+        }
+
+        return clientProjectsMap;
     }
 }
