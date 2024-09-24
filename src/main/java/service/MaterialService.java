@@ -1,6 +1,7 @@
 package main.java.service;
 
 import main.java.entities.Material;
+import main.java.entities.Project;
 import main.java.exception.MaterialValidationException;
 import main.java.repository.MaterialRepository;
 import main.java.repository.impl.MaterialRepositoryImpl;
@@ -39,13 +40,24 @@ public class MaterialService {
         return materialRepository.findAll();
     }
     // Calculate total cost without VAT for all materials
-    public BigDecimal calculCost() {
-        return materialRepository.calculCost();
-    }
+    public double[] calculateTotalCost(Project project) {
+        List<Material> materials = materialRepository.findByProject(project);
+        double totalWithoutVAT = 0;
+        double totalWithVAT = 0;
 
-    // Calculate total cost with VAT for all materials
-    public BigDecimal calculWithVatCost() {
-        return materialRepository.calculWithVatCost();
+        for (Material material : materials) {
+            double baseCost = material.getQuantity().doubleValue() * material.getUnitCost().doubleValue();
+            double transportCost = material.getTransportCost().doubleValue();
+            double qualityCoefficient = material.getQualityCoefficient().doubleValue();
+
+            double totalCostBeforeVAT = (baseCost * qualityCoefficient) + transportCost;
+            double totalCostWithVAT = totalCostBeforeVAT * (1 + material.getVatRate().doubleValue() / 100);
+
+            totalWithoutVAT += totalCostBeforeVAT;
+            totalWithVAT += totalCostWithVAT;
+        }
+
+        return new double[]{totalWithoutVAT, totalWithVAT};
     }
 
     private void validate(Material material) {
