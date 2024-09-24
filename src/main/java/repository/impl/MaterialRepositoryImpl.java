@@ -2,6 +2,7 @@ package main.java.repository.impl;
 
 import main.java.connection.DatabaseConnection;
 import main.java.entities.Material;
+import main.java.entities.Project;
 import main.java.enums.ComponentType;
 import main.java.repository.MaterialRepository;
 
@@ -140,35 +141,33 @@ public class MaterialRepositoryImpl implements MaterialRepository {
         }
         return materials;
     }
-    @Override
-    public BigDecimal calculCost() {
-        String sql = "SELECT SUM(transport_cost + quality_coefficient * base_cost) AS total_cost FROM material";
-        BigDecimal totalCost = BigDecimal.ZERO;
-
-        try (PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
-            if (resultSet.next()) {
-                totalCost = resultSet.getBigDecimal("total_cost");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return totalCost;
-    }
 
     @Override
-    public BigDecimal calculWithVatCost() {
-        String sql = "SELECT SUM((transport_cost + quality_coefficient * base_cost) * 1.2) AS total_cost_with_vat FROM material";  // Assuming 20% VAT
-        BigDecimal totalCostWithVat = BigDecimal.ZERO;
+    public List<Material> findByProject(Project project) {
+        List<Material> materials = new ArrayList<>();
+        String query = "SELECT * FROM material WHERE project_id = ?";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
-            if (resultSet.next()) {
-                totalCostWithVat = resultSet.getBigDecimal("total_cost_with_vat");
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, project.getId());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Material material = new Material();
+                    material.setId(resultSet.getLong("id"));
+                    material.setName(resultSet.getString("name"));
+                    material.setType(ComponentType.valueOf(resultSet.getString("type")));
+                    material.setUnitCost(resultSet.getBigDecimal("unit_cost"));
+                    material.setQuantity(resultSet.getBigDecimal("quantity"));
+                    material.setVatRate(resultSet.getBigDecimal("vat_rate"));
+                    material.setTransportCost(resultSet.getBigDecimal("transport_cost"));
+                    material.setQualityCoefficient(resultSet.getBigDecimal("quality_coefficient"));
+
+                    materials.add(material);
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error retrieving materials for project: " + e.getMessage());
         }
-        return totalCostWithVat;
+        return materials;
     }
 }

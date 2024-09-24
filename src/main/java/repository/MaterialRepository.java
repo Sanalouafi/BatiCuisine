@@ -1,5 +1,6 @@
 package main.java.repository;
 import main.java.entities.Material;
+import main.java.entities.Project;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,9 +12,6 @@ public interface MaterialRepository {
     void delete(Long id);
     Optional<Material> findById(Long id);
     List<Material> findAll();
-    // Total cost without VAT for all materials
-    BigDecimal calculCost();
-    // Total cost with VAT for all materials
-    BigDecimal calculWithVatCost();
+    List<Material> findByProject(Project project);
 }
 
