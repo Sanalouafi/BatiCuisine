@@ -158,7 +158,10 @@ public class MaterialRepositoryImpl implements MaterialRepository {
 
     @Override
     public BigDecimal calculWithVatCost() {
-        String sql = "SELECT SUM((transport_cost + quality_coefficient * base_cost) * 1.2) AS total_cost_with_vat FROM material";  // Assuming 20% VAT
+        String sql = "SELECT \n" +
+                "    SUM((transport_cost + quality_coefficient * base_cost) * (1 + vat_rate)) AS total_cost_with_vat \n" +
+                "FROM \n" +
+                "    material;\n";
         BigDecimal totalCostWithVat = BigDecimal.ZERO;
 
         try (PreparedStatement statement = connection.prepareStatement(sql);
