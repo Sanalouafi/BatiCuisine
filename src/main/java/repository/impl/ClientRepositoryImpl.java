@@ -38,6 +38,28 @@ public class ClientRepositoryImpl implements ClientRepository {
         }
         return Optional.empty();
     }
+    @Override
+    public Optional<Client> findByName(String name){
+        String query = "SELECT * FROM client WHERE name = ?";
+        try(PreparedStatement statement=connection.prepareStatement(query)){
+            statement.setString(1,name);
+            ResultSet resultSet=statement.executeQuery();
+            if (resultSet.next()){
+                Client client=new Client();
+                client.setId(resultSet.getLong("id"));
+                client.setName(resultSet.getString("name"));
+                client.setAddress(resultSet.getString("address"));
+                client.setPhone(resultSet.getString("phone"));
+                client.setIsProfessional(resultSet.getBoolean("is_professional"));
+                return Optional.of(client);
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error finding client by ID: " + e.getMessage());
+        }
+        return Optional.empty();
+    }
 
     @Override
     public List<Client> findAll() {

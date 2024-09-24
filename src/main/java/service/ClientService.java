@@ -22,6 +22,12 @@ public class ClientService {
         }
         return clientRepository.findById(id);
     }
+    private Optional<Client > findClientByName(String name){
+        if (name==null||name.isEmpty()){
+            throw new ClientValidationException("Invalid client ID provided.");
+        }
+        return  clientRepository.findByName(name);
+    }
 
     public List<Client> getAllClients() {
         return clientRepository.findAll();
