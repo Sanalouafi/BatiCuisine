@@ -31,8 +31,6 @@ public class LaborRepositoryImpl implements LaborRepository {
                 Labor labor = new Labor();
                 labor.setId(resultSet.getLong("id"));
                 labor.setName(resultSet.getString("name"));
-                labor.setUnitCost(resultSet.getBigDecimal("unit_cost"));
-                labor.setQuantity(resultSet.getBigDecimal("quantity"));
                 labor.setVatRate(resultSet.getBigDecimal("vat_rate"));
                 labor.setHourlyRate(resultSet.getBigDecimal("hourly_rate"));
                 labor.setHoursWorked(resultSet.getBigDecimal("hours_worked"));
@@ -56,8 +54,6 @@ public class LaborRepositoryImpl implements LaborRepository {
                 Labor labor = new Labor();
                 labor.setId(resultSet.getLong("id"));
                 labor.setName(resultSet.getString("name"));
-                labor.setUnitCost(resultSet.getBigDecimal("unit_cost"));
-                labor.setQuantity(resultSet.getBigDecimal("quantity"));
                 labor.setVatRate(resultSet.getBigDecimal("vat_rate"));
                 labor.setHourlyRate(resultSet.getBigDecimal("hourly_rate"));
                 labor.setHoursWorked(resultSet.getBigDecimal("hours_worked"));
