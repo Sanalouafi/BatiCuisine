@@ -98,5 +98,5 @@ Suivre les instructions à l'écran pour naviguer dans le menu principal et util
 
 ## Autre
 
-- [Lien de la présentation ]()
+- [Lien de la présentation ](https://www.canva.com/design/DAF-9AMSm3Y/mzoNZmva58xvp6gdIylvfQ/edit?utm_content=DAF-9AMSm3Y&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 - [Lien de la planification ](https://sanalouafi2003.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiMGM5NGNhMTJmZGIxNDQ3ZGJhNTcxNDE5NTczZTYzMDkiLCJwIjoiaiJ9)
