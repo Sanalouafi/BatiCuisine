@@ -9,9 +9,9 @@ public class DatabaseConnection {
     private static DatabaseConnection instance;
     private Connection connection;
 
-    private static final String URL = System.getenv("url");
-    private static final String USER = System.getenv("username");
-    private static final String PASSWORD = System.getenv("password");
+    private static final String URL = "jdbc:postgresql://localhost:5432/bati_cuisine";
+    private static final String USER = "Bati_Cuisine";
+    private static final String PASSWORD = "1234";
 
     private DatabaseConnection() {
         try {

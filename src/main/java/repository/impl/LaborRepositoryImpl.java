@@ -79,7 +79,7 @@ public class LaborRepositoryImpl implements LaborRepository {
             statement.setBigDecimal(4, labor.getHoursWorked());
             statement.setBigDecimal(5, labor.getProductivityFactor());
             statement.setString(6, labor.getType().name());
-            statement.setLong(7, labor.getProject().getId()); // Ensure this is set correctly
+            statement.setLong(7, labor.getProject().getId());
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {

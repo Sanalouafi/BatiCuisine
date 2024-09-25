@@ -39,28 +39,30 @@ public class ClientRepositoryImpl implements ClientRepository {
         return Optional.empty();
     }
     @Override
-    public Optional<Client> findByName(String name){
+    public Optional<Client> findByName(String name) {
         String query = "SELECT * FROM client WHERE name = ?";
-        try(PreparedStatement statement=connection.prepareStatement(query)){
-            statement.setString(1,name);
-            ResultSet resultSet=statement.executeQuery();
-            if (resultSet.next()){
-                Client client=new Client();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+
+            List<Client> clients = new ArrayList<>();
+            while (resultSet.next()) {
+                Client client = new Client();
                 client.setId(resultSet.getLong("id"));
                 client.setName(resultSet.getString("name"));
                 client.setAddress(resultSet.getString("address"));
                 client.setPhone(resultSet.getString("phone"));
                 client.setIsProfessional(resultSet.getBoolean("is_professional"));
-                return Optional.of(client);
-
+                clients.add(client);
             }
 
+            return clients.stream().findFirst();
+
         } catch (SQLException e) {
-            System.out.println("Error finding client by ID: " + e.getMessage());
+            System.out.println("Error finding client by name: " + e.getMessage());
         }
         return Optional.empty();
     }
-
     @Override
     public List<Client> findAll() {
         List<Client> clients = new ArrayList<>();
@@ -88,7 +90,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     public void save(Client client) {
         // Ensure client has proper values set
         if (client.getIsProfessional() == null) {
-            client.setIsProfessional(false); // Default or handle as needed
+            client.setIsProfessional(false);
         }
 
         String query = "INSERT INTO client (name, address, phone, is_professional) VALUES (?, ?, ?, ?)";
