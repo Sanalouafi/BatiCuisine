@@ -92,10 +92,11 @@ Exécuter les scripts SQL fournis pour initialiser la base de données.
 ## Utilisation : 
 Lancer l'application :
 ```bash
+java -cp "MyJarFile.jar;lib/*" Main
 ```
 Suivre les instructions à l'écran pour naviguer dans le menu principal et utiliser les différentes fonctionnalités.
 
 ## Autre
 
-- [Lien de la présentation ]()
-- [Lien de la planification ]()
+- [Lien de la présentation ](https://www.canva.com/design/DAF-9AMSm3Y/mzoNZmva58xvp6gdIylvfQ/edit?utm_content=DAF-9AMSm3Y&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+- [Lien de la planification ](https://sanalouafi2003.atlassian.net/jira/software/projects/SCRUM/boards/1?atlOrigin=eyJpIjoiMGM5NGNhMTJmZGIxNDQ3ZGJhNTcxNDE5NTczZTYzMDkiLCJwIjoiaiJ9)
