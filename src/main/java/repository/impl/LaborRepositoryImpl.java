@@ -71,7 +71,7 @@ public class LaborRepositoryImpl implements LaborRepository {
     public void save(Labor labor) throws LaborValidationException {
         validateLabor(labor);
 
-        String query = "INSERT INTO labor (name,vat_rate, hourly_rate, hours_worked, productivity_factor, type,project_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?::componenttype,?)";
+        String query = "INSERT INTO labor (name, vat_rate, hourly_rate, hours_worked, productivity_factor, type, project_id) VALUES (?, ?, ?, ?, ?, ?::componenttype, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, labor.getName());
             statement.setBigDecimal(2, labor.getVatRate());
@@ -79,7 +79,7 @@ public class LaborRepositoryImpl implements LaborRepository {
             statement.setBigDecimal(4, labor.getHoursWorked());
             statement.setBigDecimal(5, labor.getProductivityFactor());
             statement.setString(6, labor.getType().name());
-            statement.setLong(7, labor.getProject().getId());
+            statement.setLong(7, labor.getProject().getId()); // Ensure this is set correctly
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
@@ -94,7 +94,6 @@ public class LaborRepositoryImpl implements LaborRepository {
             System.out.println("Error saving labor: " + e.getMessage());
         }
     }
-
 
     @Override
     public void update(Labor labor) throws LaborValidationException {

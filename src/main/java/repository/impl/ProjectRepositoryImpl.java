@@ -78,7 +78,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public void save(Project project) {
         validateProject(project);
 
-        String query = "INSERT INTO Project (name, profit_margin, total_cost, status, client_id) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Project (name, profit_margin, total_cost, status, client_id) VALUES (?, ?, ?, ?::projectstatus, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, project.getName());
             statement.setBigDecimal(2, project.getProfitMargin());
@@ -104,12 +104,12 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public void update(Project project) {
         validateProject(project);
 
-        String query = "UPDATE Project SET name = ?, profit_margin = ?, total_cost = ?, status = ?, client_id = ? WHERE id = ?";
+        String query = "UPDATE project SET name = ?, profit_margin = ?, total_cost = ?, status = ?::projectstatus, client_id = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, project.getName());
             statement.setBigDecimal(2, project.getProfitMargin());
             statement.setBigDecimal(3, project.getTotalCost());
-            statement.setString(4, project.getStatus().name());
+            statement.setString(4, project.getStatus().name()); // Ensure this matches the enum values in the database
             statement.setLong(5, project.getClient().getId());
             statement.setLong(6, project.getId());
 
@@ -191,7 +191,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
             return;
         }
 
-        String query = "UPDATE Project SET status = ? WHERE id = ?";
+        String query = "UPDATE Project SET status = ?::projectstatus WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, newStatus.name());

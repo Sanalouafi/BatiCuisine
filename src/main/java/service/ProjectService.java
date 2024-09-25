@@ -103,9 +103,12 @@ public class ProjectService {
         // Calculate the final total cost (with VAT and margin)
         double finalTotalCost = totalCostWithVAT + totalMargin;
 
-        // Apply professional client discount if applicable
-        if (project.getClient() != null && project.getClient().getIsProfessional()) {
-            finalTotalCost = applyProfessionalClientDiscount(finalTotalCost);
+        // Check if the client is professional
+        if (project.getClient() != null) {
+            Boolean isProfessional = project.getClient().getIsProfessional();
+            if (isProfessional != null && isProfessional) {
+                finalTotalCost = applyProfessionalClientDiscount(finalTotalCost);
+            }
         }
 
         // Output the results
@@ -116,7 +119,6 @@ public class ProjectService {
         // Return the results as an array
         return new double[]{totalCostBeforeVAT, totalCostWithVAT, totalMargin, finalTotalCost};
     }
-
     private double applyProfessionalClientDiscount(double finalTotalCost) {
         // Convert finalTotalCost to BigDecimal for calculation
         BigDecimal totalCostBD = BigDecimal.valueOf(finalTotalCost);

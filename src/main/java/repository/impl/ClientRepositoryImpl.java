@@ -83,13 +83,13 @@ public class ClientRepositoryImpl implements ClientRepository {
         return clients;
     }
 
+
     @Override
     public void save(Client client) {
-        // Validate the client before saving
-        client.setName(client.getName()); // Ensure validation happens
-        client.setAddress(client.getAddress()); // Ensure validation happens
-        client.setPhone(client.getPhone()); // Ensure validation happens
-        client.setIsProfessional(client.getIsProfessional()); // Ensure validation happens
+        // Ensure client has proper values set
+        if (client.getIsProfessional() == null) {
+            client.setIsProfessional(false); // Default or handle as needed
+        }
 
         String query = "INSERT INTO client (name, address, phone, is_professional) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -111,7 +111,6 @@ public class ClientRepositoryImpl implements ClientRepository {
             System.out.println("Error saving client: " + e.getMessage());
         }
     }
-
     @Override
     public void update(Client client) {
         // Validate the client before updating
