@@ -103,7 +103,7 @@ public class MainMenu {
         String phone = scanner.nextLine();
         System.out.print("Is the client a professional? (true/false): ");
         boolean isProfessional = scanner.nextBoolean();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
 
         Client newClient = new Client(name, address, phone, isProfessional);
         clientService.createClient(newClient);
@@ -117,7 +117,7 @@ public class MainMenu {
         System.out.print("Enter profit margin: ");
         BigDecimal profitMargin = scanner.nextBigDecimal();
 
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
 
         // Set default status to Pending
         ProjectStatus status = ProjectStatus.Pending;
@@ -177,7 +177,7 @@ public class MainMenu {
         BigDecimal transportCost = scanner.nextBigDecimal();
         System.out.print("Enter quality coefficient (0 to 1): ");
         BigDecimal qualityCoefficient = scanner.nextBigDecimal();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
 
         Material material = new Material(name, type, unitCost, quantity, vatRate, project, transportCost, qualityCoefficient);
         materialService.save(material);
@@ -209,7 +209,7 @@ public class MainMenu {
         BigDecimal vatRate = scanner.nextBigDecimal();
         System.out.print("Enter productivity factor (0 to 1): ");
         BigDecimal productivityFactor = scanner.nextBigDecimal();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
 
         Labor labor = new Labor(name, type, vatRate, project, hourlyRate, hoursWorked, productivityFactor);
         laborService.addLabor(labor);
@@ -260,7 +260,7 @@ public class MainMenu {
     private void calculateProjectCost() {
         System.out.print("Enter the project ID to calculate the cost: ");
         Long projectId = scanner.nextLong();
-        scanner.nextLine(); // Consume newline
+        scanner.nextLine(); 
 
         Project project = projectService.findById(projectId).orElse(null);
         if (project == null) {
