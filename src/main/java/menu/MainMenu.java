@@ -20,7 +20,7 @@ public class MainMenu {
     public void displayMenu() {
         while (true) {
             showMainMenu();
-            int choice = getValidIntegerInput();
+            int choice = getValidIntegerInput("Choose an option: ");
 
             switch (choice) {
                 case 1:
@@ -47,16 +47,47 @@ public class MainMenu {
         System.out.println("2. View existing projects");
         System.out.println("3. Calculate project cost");
         System.out.println("4. Exit");
-        System.out.print("Choose an option: ");
     }
 
-    private int getValidIntegerInput() {
+    private int getValidIntegerInput(String prompt) {
         while (true) {
+            System.out.print(prompt);
             try {
                 return Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.print("Invalid input. Please enter a number: ");
+                System.out.print("Invalid input. Please enter a valid integer: ");
             }
+        }
+    }
+
+    private String getValidStringInput(String prompt) {
+        System.out.print(prompt);
+        String input = scanner.nextLine();
+        while (input.trim().isEmpty()) {
+            System.out.print("Input cannot be empty. " + prompt);
+            input = scanner.nextLine();
+        }
+        return input;
+    }
+
+    private BigDecimal getValidBigDecimalInput(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return new BigDecimal(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a valid decimal number: ");
+            }
+        }
+    }
+
+    private boolean getValidBooleanInput(String prompt) {
+        while (true) {
+            System.out.print(prompt + " (true/false): ");
+            String input = scanner.nextLine().toLowerCase();
+            if (input.equals("true")) return true;
+            if (input.equals("false")) return false;
+            System.out.println("Invalid input. Please enter 'true' or 'false'.");
         }
     }
 
@@ -66,7 +97,7 @@ public class MainMenu {
         System.out.println("1. Search for an existing client");
         System.out.println("2. Add a new client");
         System.out.print("Choose an option: ");
-        int clientChoice = getValidIntegerInput();
+        int clientChoice = getValidIntegerInput("Choose an option: ");
 
         Client selectedClient;
 
@@ -86,8 +117,7 @@ public class MainMenu {
     }
 
     private Client searchExistingClient() {
-        System.out.print("Enter the client's name: ");
-        String clientName = scanner.nextLine();
+        String clientName = getValidStringInput("Enter the client's name: ");
         return clientService.findClientByName(clientName).orElseGet(() -> {
             System.out.println("Client not found!");
             return null;
@@ -95,15 +125,10 @@ public class MainMenu {
     }
 
     private Client addNewClient() {
-        System.out.print("Enter client's name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter client's address: ");
-        String address = scanner.nextLine();
-        System.out.print("Enter client's phone number: ");
-        String phone = scanner.nextLine();
-        System.out.print("Is the client a professional? (true/false): ");
-        boolean isProfessional = scanner.nextBoolean();
-        scanner.nextLine(); 
+        String name = getValidStringInput("Enter client's name: ");
+        String address = getValidStringInput("Enter client's address: ");
+        String phone = getValidPhoneNumber("Enter client's phone number (10 digits): ");
+        boolean isProfessional = getValidBooleanInput("Is the client a professional?");
 
         Client newClient = new Client(name, address, phone, isProfessional);
         clientService.createClient(newClient);
@@ -111,32 +136,37 @@ public class MainMenu {
         return newClient;
     }
 
+    private String getValidPhoneNumber(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String phone = scanner.nextLine();
+            if (phone.matches("\\d{10}")) {
+                return phone;
+            } else {
+                System.out.println("Invalid phone number. Please enter exactly 10 digits.");
+            }
+        }
+    }
+
     private Project createProject(Client client) {
-        System.out.print("Enter project name: ");
-        String projectName = scanner.nextLine();
-        System.out.print("Enter profit margin: ");
-        BigDecimal profitMargin = scanner.nextBigDecimal();
+        String projectName = getValidStringInput("Enter project name: ");
+        BigDecimal profitMargin = getValidBigDecimalInput("Enter profit margin: ");
 
-        scanner.nextLine(); 
-
-        // Set default status to Pending
         ProjectStatus status = ProjectStatus.Pending;
-
-        // Initialize totalCost to BigDecimal.ZERO
         BigDecimal totalCost = BigDecimal.ZERO;
 
-        // Create the new project with the initialized total cost
-        Project newProject = new Project(projectName, profitMargin, totalCost, ProjectStatus.Pending, client);
+        Project newProject = new Project(projectName, profitMargin, totalCost, status, client);
         projectService.save(newProject);
         System.out.println("Project created successfully!");
         return newProject;
     }
+
     private void handleMaterialsAndLabors(Project project) {
         BigDecimal finalTotalCost = BigDecimal.ZERO;
 
         while (true) {
             System.out.println("Do you want to add materials or labor? (1 for Materials, 2 for Labor, 0 to finish)");
-            int choice = getValidIntegerInput();
+            int choice = getValidIntegerInput("Choose an option: ");
 
             if (choice == 1) {
                 finalTotalCost = addMaterial(project, finalTotalCost);
@@ -149,77 +179,59 @@ public class MainMenu {
             }
         }
 
-        // Update the project with the new total cost
         project.setTotalCost(finalTotalCost);
         projectService.update(project);  // Save the updated project
     }
-    private BigDecimal addMaterial(Project project, BigDecimal currentTotalCost) {
-        System.out.print("Enter material name: ");
-        String name = scanner.nextLine();
 
-        // Set a default component type of MATERIAL
+    private BigDecimal addMaterial(Project project, BigDecimal currentTotalCost) {
+        String name = getValidStringInput("Enter material name: ");
         ComponentType type = ComponentType.Materiel;
 
-        // Optionally, ask user if they want to specify a different type
         System.out.print("Do you want to specify a different component type? (y/n): ");
         if (scanner.nextLine().equalsIgnoreCase("y")) {
             System.out.print("Enter component type (e.g., MATERIAL, LABOR): ");
             type = ComponentType.valueOf(scanner.nextLine().toUpperCase());
         }
 
-        System.out.print("Enter unit cost: ");
-        BigDecimal unitCost = scanner.nextBigDecimal();
-        System.out.print("Enter quantity: ");
-        BigDecimal quantity = scanner.nextBigDecimal();
-        System.out.print("Enter VAT rate: ");
-        BigDecimal vatRate = scanner.nextBigDecimal();
-        System.out.print("Enter transport cost: ");
-        BigDecimal transportCost = scanner.nextBigDecimal();
-        System.out.print("Enter quality coefficient (0 to 1): ");
-        BigDecimal qualityCoefficient = scanner.nextBigDecimal();
-        scanner.nextLine(); 
+        BigDecimal unitCost = getValidBigDecimalInput("Enter unit cost: ");
+        BigDecimal quantity = getValidBigDecimalInput("Enter quantity: ");
+        BigDecimal vatRate = getValidBigDecimalInput("Enter VAT rate: ");
+        BigDecimal transportCost = getValidBigDecimalInput("Enter transport cost: ");
+        BigDecimal qualityCoefficient = getValidBigDecimalInput("Enter quality coefficient (0 to 1): ");
 
         Material material = new Material(name, type, unitCost, quantity, vatRate, project, transportCost, qualityCoefficient);
         materialService.save(material);
 
-        // Calculate and return new total cost
         BigDecimal totalMaterialCost = unitCost.multiply(quantity).add(transportCost);
         System.out.println("Material added successfully! Total Material Cost: " + totalMaterialCost);
-        return currentTotalCost.add(totalMaterialCost); // Update and return the new total cost
+        return currentTotalCost.add(totalMaterialCost);
     }
-    private BigDecimal addLabor(Project project, BigDecimal currentTotalCost) {
-        System.out.print("Enter labor name: ");
-        String name = scanner.nextLine();
 
-        // Set a default component type of LABOR
+    private BigDecimal addLabor(Project project, BigDecimal currentTotalCost) {
+        String name = getValidStringInput("Enter labor name: ");
         ComponentType type = ComponentType.Labor;
 
-        // Optionally, ask user if they want to specify a different type
         System.out.print("Do you want to specify a different component type? (y/n): ");
         if (scanner.nextLine().equalsIgnoreCase("y")) {
             System.out.print("Enter component type (e.g., MATERIAL, LABOR): ");
             type = ComponentType.valueOf(scanner.nextLine().toUpperCase());
         }
 
-        System.out.print("Enter hourly rate: ");
-        BigDecimal hourlyRate = scanner.nextBigDecimal();
-        System.out.print("Enter hours worked: ");
-        BigDecimal hoursWorked = scanner.nextBigDecimal();
-        System.out.print("Enter VAT rate: ");
-        BigDecimal vatRate = scanner.nextBigDecimal();
-        System.out.print("Enter productivity factor (0 to 1): ");
-        BigDecimal productivityFactor = scanner.nextBigDecimal();
-        scanner.nextLine(); 
+        BigDecimal hourlyRate = getValidBigDecimalInput("Enter hourly rate: ");
+        BigDecimal hoursWorked = getValidBigDecimalInput("Enter hours worked: ");
+        BigDecimal vatRate = getValidBigDecimalInput("Enter VAT rate: ");
+        BigDecimal productivityFactor = getValidBigDecimalInput("Enter productivity factor (0 to 1): ");
 
         Labor labor = new Labor(name, type, vatRate, project, hourlyRate, hoursWorked, productivityFactor);
         laborService.addLabor(labor);
 
-        // Calculate and return new total cost
         BigDecimal totalLaborCost = hourlyRate.multiply(hoursWorked);
         System.out.println("Labor added successfully! Total Labor Cost: " + totalLaborCost);
-        return currentTotalCost.add(totalLaborCost); // Update and return the new total cost
-    }    private void registerQuote(Project project) {
-        BigDecimal finalTotalCost = project.getTotalCost(); // Get the final total cost after adding materials and labor
+        return currentTotalCost.add(totalLaborCost);
+    }
+
+    private void registerQuote(Project project) {
+        BigDecimal finalTotalCost = project.getTotalCost(); // Get final total cost
 
         System.out.print("Enter the issue date of the quote (format: YYYY-MM-DD): ");
         String issueDate = scanner.nextLine();
@@ -230,7 +242,6 @@ public class MainMenu {
         quoteService.saveQuote(quote);
         System.out.println("Quote saved successfully!");
 
-        // Prompt user to accept the quote
         System.out.print("Do you want to accept the quote? (y/n): ");
         if (scanner.nextLine().equalsIgnoreCase("y")) {
             quoteService.updateIsAcceptValue(quote.getId());
@@ -260,7 +271,7 @@ public class MainMenu {
     private void calculateProjectCost() {
         System.out.print("Enter the project ID to calculate the cost: ");
         Long projectId = scanner.nextLong();
-        scanner.nextLine(); 
+        scanner.nextLine();
 
         Project project = projectService.findById(projectId).orElse(null);
         if (project == null) {
@@ -268,8 +279,7 @@ public class MainMenu {
             return;
         }
 
-        System.out.print("Enter the margin rate (as a decimal, e.g., 0.2 for 20%): ");
-        double marginRate = scanner.nextDouble();
+        double marginRate = getValidBigDecimalInput("Enter the margin rate (as a decimal, e.g., 0.2 for 20%): ").doubleValue();
 
         double[] costDetails = projectService.calculateTotalCost(project, marginRate);
 
