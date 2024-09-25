@@ -1,4 +1,3 @@
-import main.java.connection.DatabaseConnection;
 import main.java.menu.MainMenu;
 
 public class Main {

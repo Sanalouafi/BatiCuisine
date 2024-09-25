@@ -15,7 +15,6 @@ public class DatabaseConnection {
 
     private DatabaseConnection() {
         try {
-            System.out.println("Connecting to database...");
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             System.out.println("Error while connecting to the database: " + e.getMessage());
